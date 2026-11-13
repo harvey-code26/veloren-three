@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "types": [] },
+  "include": ["src/core/**/*.ts", "src/physics/**/*.ts", "src/input/**/*.ts", "src/world/**/*.ts"]
+}

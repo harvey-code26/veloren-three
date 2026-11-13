@@ -1,38 +1,50 @@
 # Veloren Three
 
-A step-by-step Three.js / TypeScript exploration of voxel open-world RPG systems, inspired by [Veloren](https://veloren.net/).
+An independent Three.js + TypeScript experiment in reconstructing the foundational systems of [Veloren](https://veloren.net/). Not affiliated with the official game.
 
-> Independent learning and engineering project. Not an official Veloren browser port.
+**Current milestone: P1 core movement test field.** It is a development fixture, not a voxel game yet.
 
-## Status
+## Run
 
-**P0 — Research and planning:** initial documentation committed. **P1 — Core simulation:** not started. The starter scene only verifies that the rendering toolchain loads.
-
-- [Full research, architecture and milestone checklist](docs/PLAN.md)
-- [Development decisions](docs/DECISIONS.md)
-- [Progress tracker](docs/PROGRESS.md)
-
-## Run locally
-
-Requirements: Node.js 22+ and npm.
+Requires Node.js 22+ and npm.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open the URL printed by Vite. This is a **render-only bootstrap**, not yet a playable demo.
+Open the local URL printed by Vite. Click the scene to lock the cursor and rotate the camera with the mouse; press Esc to unlock it.
+
+| Control | Action |
+| --- | --- |
+| W A S D / arrow keys | Move relative to camera |
+| Mouse (after click) / Q E | Orbit camera |
+| Space | Jump |
+| Shift | Sprint |
+| Mouse wheel | Zoom |
+| R | Respawn at test start |
+| F3 | Toggle debug panel |
+
+## Test and build
 
 ```bash
-npm run typecheck
+npm run test
+npm run typecheck:core
 npm run build
 ```
 
-## Development rules
+`npm run test` runs deterministic simulation tests with Node's built-in test runner and TypeScript stripping. `npm run build` checks all TS modules and produces the Vite browser bundle. GitHub Actions also validates each push and stores the built `dist` artifact.
 
-- Keep simulation and gameplay data separate from Three.js rendering.
-- Deliver a runnable, tested checkpoint at every major milestone.
-- Track changes and test evidence in `docs/PROGRESS.md`.
-- Review licenses of individual Veloren assets before importing them.
+## Documentation
 
-Veloren's code is GPL-3.0-or-later, and individual media assets can have different terms. This repository does **not** currently contain copied Veloren code or media. The license of this independently authored starter is not yet declared; decide the distribution license before incorporating upstream code or publishing derivative builds.
+- [Research, architecture and P0–P10 checklist](docs/PLAN.md)
+- [Current progress](docs/PROGRESS.md)
+- [P1 review and testing route](docs/P1-REVIEW.md)
+- [Engineering decisions](docs/DECISIONS.md)
+
+## Important boundaries
+
+- Simulation is TypeScript data; Three.js only renders it.
+- P1 uses handcrafted collision boxes. P2 will add voxels; P3 will add chunk streaming.
+- This repository currently contains original code and primitive test shapes only, no Veloren media.
+- Veloren code is GPL-3.0-or-later and individual assets may have separate restrictions. Review licenses and attribution before any upstream reuse or publication of derivatives.
