@@ -19,7 +19,7 @@ Updated: 2026-11-13
 ## Hosting
 
 - [x] GitHub Pages automated build/deploy workflow added (with Vite subpath base).
-- [ ] Pages hosting activated and deployment job succeeded.
+- [ ] Pages hosting activated and deployment job succeeded — **blocked by repository Pages configuration**. [Build succeeded, deploy returned 404](https://github.com/harvey-code26/veloren-three/actions/runs/43443419909); administrator must set Settings → Pages → Source: GitHub Actions, then re-run the failed deployment job.
 - [ ] Remote HTTPS test field verified in browser.
 
 ## P1 checklist
