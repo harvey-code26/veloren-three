@@ -4,6 +4,10 @@ An independent Three.js + TypeScript experiment in reconstructing the foundation
 
 **Current milestone: P1 core movement test field.** It is a development fixture, not a voxel game yet.
 
+## Online preview
+
+Deployment workflow: [Deploy to GitHub Pages](.github/workflows/deploy.yml). Target URL: <https://harvey-code26.github.io/veloren-three/> (requires Pages activation and a successful deployment). See [deployment notes](docs/DEPLOYMENT.md).
+
 ## Run
 
 Requires Node.js 22+ and npm.

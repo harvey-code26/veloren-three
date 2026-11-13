@@ -16,6 +16,12 @@ Updated: 2026-11-13
 | P9 Stability and release candidate | Not started | — |
 | P10 Optional expansions | Deferred | — |
 
+## Hosting
+
+- [x] GitHub Pages automated build/deploy workflow added (with Vite subpath base).
+- [ ] Pages hosting activated and deployment job succeeded.
+- [ ] Remote HTTPS test field verified in browser.
+
 ## P1 checklist
 
 - [x] Fixed timestep (60 Hz) with bounded catch-up and blur reset.
