@@ -19,8 +19,8 @@ Updated: 2026-11-13
 ## Hosting
 
 - [x] GitHub Pages automated build/deploy workflow added (with Vite subpath base).
-- [ ] Pages hosting activated and deployment job succeeded — **blocked by repository Pages configuration**. [Build succeeded, deploy returned 404](https://github.com/harvey-code26/veloren-three/actions/runs/43443419909); administrator must set Settings → Pages → Source: GitHub Actions, then re-run the failed deployment job.
-- [ ] Remote HTTPS test field verified in browser.
+- [x] Pages hosting enabled; deployment successful ([GitHub Actions successful rerun](https://github.com/harvey-code26/veloren-three/actions/runs/43443419909)).
+- [ ] Remote browser gameplay smoke test: awaiting user hands-on review. GitHub deploy job reported success and the [published address](https://harvey-code26.github.io/veloren-three/); independent browser rendering check not yet recorded.
 
 ## P1 checklist
 

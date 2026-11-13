@@ -6,7 +6,7 @@ An independent Three.js + TypeScript experiment in reconstructing the foundation
 
 ## Online preview
 
-Deployment workflow: [Deploy to GitHub Pages](.github/workflows/deploy.yml). Target URL: <https://harvey-code26.github.io/veloren-three/> (requires Pages activation and a successful deployment). See [deployment notes](docs/DEPLOYMENT.md).
+Deployment workflow: [Deploy to GitHub Pages](.github/workflows/deploy.yml). Published URL: <https://harvey-code26.github.io/veloren-three/> ([GitHub Pages deployment confirmed](https://github.com/harvey-code26/veloren-three/actions/runs/43443419909)). See [deployment notes](docs/DEPLOYMENT.md).
 
 ## Run
 
