@@ -5,7 +5,7 @@ Updated: 2026-11-13
 | Milestone | Status | Evidence |
 | --- | --- | --- |
 | P0 Research & plan | Draft complete; awaiting user scope review | [PLAN.md](PLAN.md) |
-| P1 Runtime, time step, movement and collision | **Rules tested; browser build and user review pending** | [P1 review](P1-REVIEW.md) |
+| P1 Runtime, time step, movement and collision | **Core tests and CI build passed; browser hands-on review pending** | [P1 review](P1-REVIEW.md) |
 | P2 Voxel data, meshing and collision | Not started | — |
 | P3 Seeded world, streaming and basic save | Not started | — |
 | P4 Climb, swim, glide and stamina | Not started | — |
@@ -24,7 +24,7 @@ Updated: 2026-11-13
 - [x] Third-person orbit camera and obstacle ray test implementation.
 - [x] Purpose-built collision fixture scene and F3 diagnostics.
 - [x] Local unit tests 9/9 and core-only TypeScript check.
-- [ ] GitHub CI TypeScript + Vite production build verified.
+- [x] GitHub CI TypeScript + Vite production build verified ([successful run](https://github.com/harvey-code26/veloren-three/actions/runs/43440686933)).
 - [ ] Browser interaction and user feedback on feel.
 - [ ] Real-device 20-minute smoke and performance run.
 
