@@ -8,7 +8,7 @@ export class ThirdPersonCamera {
   private readonly target = new THREE.Vector3();
   private readonly direction = new THREE.Vector3();
 
-  update(position: Vec3, yaw: number, pitch: number, distance: number, obstacles: readonly THREE.Object3D[]): void {
+  update(position: Vec3, yaw: number, pitch: number, distance: number, obstacles: THREE.Object3D[]): void {
     this.target.set(position.x, position.y + 1.34, position.z);
     this.direction.set(
       Math.sin(yaw) * Math.cos(pitch),
