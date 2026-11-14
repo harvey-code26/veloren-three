@@ -16,7 +16,7 @@ These are genuine upstream `.vox` model pieces, not generated look-alikes. See [
 | VOX | `armor/cloth_blue/shoulder_0.vox` |
 
 Source: [Veloren repository pinned snapshot](https://github.com/veloren/veloren/commit/cd75076cf157d47c97bdf21c5bd7012cc4959dfc), Veloren contributors.
-License: [upstream GPL-3.0-or-later](https://github.com/veloren/veloren/blob/cd75076cf157d47c97bdf21c5bd7012cc4959dfc/LICENSE), with per-file exceptions listed in [assets/credits.ron](https://github.com/veloren/veloren/blob/cd75076cf157d47c97bdf21c5bd7012cc4959dfc/assets/credits.ron). The chosen nine files are not listed among the special noncommercial model exceptions in that snapshot; upstream credits state an unlisted asset defaults to GPLv3. Preserve upstream attribution and observe GPL obligations when distributing.
+License: [bundled GPL-3.0 text](../licenses/VELOREN-GPL-3.0.txt) / [upstream GPL-3.0-or-later](https://github.com/veloren/veloren/blob/cd75076cf157d47c97bdf21c5bd7012cc4959dfc/LICENSE), with per-file exceptions listed in [assets/credits.ron](https://github.com/veloren/veloren/blob/cd75076cf157d47c97bdf21c5bd7012cc4959dfc/assets/credits.ron). The chosen nine files are not listed among the special noncommercial model exceptions in that snapshot; upstream credits state an unlisted asset defaults to GPLv3. Preserve upstream attribution and observe GPL obligations when distributing.
 
 Offsets from `humanoid_head_manifest.ron`, `humanoid_armor_*_manifest.ron`, skeleton data from `voxygen/anim/src/character/mod.rs`. HumanOne skin, Oak hair and CornflowerBlue eyes from `humanoid_color_manifest.ron`. Animation is an approximate Three.js implementation, not the complete Rust procedural animation.
 

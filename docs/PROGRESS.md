@@ -31,7 +31,7 @@ Updated: 2026-11-14
 - [x] 16/16 tests, TypeScript/Vite production build and GitHub Pages deployment green ([Validate](https://github.com/harvey-code26/veloren-three/actions/runs/43539307127), [Deploy](https://github.com/harvey-code26/veloren-three/actions/runs/43539307461)).
 - [ ] Browser movement/camera user review and original-game comparison.
 
-## P1.2 original Veloren character\n\n- [x] Locate original Human Female head, hair, eyes, blue-cloth clothing and original pivot offsets.\n- [x] Pin nine original VOX files by Git blob SHA and add a reproducible build-time downloader.\n- [x] Replace the primitive avatar with an articulated assembly of original voxel parts.\n- [ ] Validate downloaded sources, model assembly and rendering in CI and on a real browser.\n- [ ] Compare procedural animation fidelity with original Veloren (currently simplified).\n\n## P1 checklist
+## P1.2 original Veloren character\n\n- [x] Locate original Human Female head, hair, eyes, blue-cloth clothing and original pivot offsets.\n- [x] Pin nine original VOX files by Git blob SHA and add a reproducible build-time downloader.\n- [x] Replace the primitive avatar with an articulated assembly of original voxel parts.\n- [x] CI downloaded and SHA-verified 9 original VOX files; model geometry and 12-part assembly checks passed, and the site deployed ([successful run](https://github.com/harvey-code26/veloren-three/actions/runs/43549172476)).\n- [ ] Browser rendering and visual parity still require hands-on inspection.\n- [ ] Compare procedural animation fidelity with original Veloren (currently simplified).\n\n## P1 checklist
 
 - [x] Fixed timestep (60 Hz) with bounded catch-up and blur reset.
 - [x] Input command sequence and edge-triggered jump.
