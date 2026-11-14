@@ -5,7 +5,7 @@ Updated: 2026-11-14
 | Milestone | Status | Evidence |
 | --- | --- | --- |
 | P0 Research & plan | Draft complete; awaiting user scope review | [PLAN.md](PLAN.md) |
-| P1 Runtime, time step, movement and collision | **Core tests and CI build passed; browser hands-on review pending** | [P1 review](P1-REVIEW.md) |
+| P1 Runtime, time step, movement and collision | **26 automated checks and Chromium smoke passed; hands-on original-game comparison pending** | [P1 review](P1-REVIEW.md), [P1.3](P1-3-ANIMATION.md) |
 | P2 Voxel data, meshing and collision | Not started | — |
 | P3 Seeded world, streaming and basic save | Not started | — |
 | P4 Climb, swim, glide and stamina | Not started | — |
@@ -31,7 +31,17 @@ Updated: 2026-11-14
 - [x] 16/16 tests, TypeScript/Vite production build and GitHub Pages deployment green ([Validate](https://github.com/harvey-code26/veloren-three/actions/runs/43539307127), [Deploy](https://github.com/harvey-code26/veloren-three/actions/runs/43539307461)).
 - [ ] Browser movement/camera user review and original-game comparison.
 
-## P1.3 character motion and camera turn alignment\n\n- [x] Isolate motion poses from rendering; feet remain on their respective body sides.\n- [x] Use distance-driven gait and continuous idle breathing with rise/fall/landing/roll states.\n- [x] Smooth avatar facing via shortest-angle turn; keep original control keys and free look.\n- [x] Add deterministic animation-state and foot-invariant tests.\n- [ ] Verify CI and automatic deployment, then browser motion playback and Veloren visual comparison.\n\n## P1.2 original Veloren character\n\n- [x] Locate original Human Female head, hair, eyes, blue-cloth clothing and original pivot offsets.\n- [x] Pin nine original VOX files by Git blob SHA and add a reproducible build-time downloader.\n- [x] Replace the primitive avatar with an articulated assembly of original voxel parts.\n- [x] CI downloaded and SHA-verified 9 original VOX files; model geometry and 12-part assembly checks passed, and the site deployed ([successful run](https://github.com/harvey-code26/veloren-three/actions/runs/43549172476)).\n- [ ] Browser rendering and visual parity still require hands-on inspection.\n- [ ] Compare procedural animation fidelity with original Veloren (currently simplified).\n\n## P1 checklist
+## P1.3 character motion and camera turn alignment
+
+- [x] Isolate motion poses from rendering; feet remain on their respective body sides.\n- [x] Use distance-driven gait and continuous idle breathing with rise/fall/landing/roll states.\n- [x] Smooth avatar facing via shortest-angle turn; keep original control keys and free look.\n- [x] Add deterministic animation-state and foot-invariant tests.\n- [x] 26/26 automated tests and TypeScript/Vite build passed ([Validate](https://github.com/harvey-code26/veloren-three/actions/runs/43586574686)).
+- [x] Headless Chromium loaded original VOX assets, captured three screenshots, replayed straight W movement and switched to first person; Pages deployed ([Deploy](https://github.com/harvey-code26/veloren-three/actions/runs/43586574665)).
+- [ ] Compare animation timing and mouse look against native Veloren on a real gaming machine.
+
+## P1.2 original Veloren character
+
+- [x] Locate original Human Female head, hair, eyes, blue-cloth clothing and original pivot offsets.\n- [x] Pin nine original VOX files by Git blob SHA and add a reproducible build-time downloader.\n- [x] Replace the primitive avatar with an articulated assembly of original voxel parts.\n- [x] CI downloaded and SHA-verified 9 original VOX files; model geometry and 12-part assembly checks passed, and the site deployed ([successful run](https://github.com/harvey-code26/veloren-three/actions/runs/43549172476)).\n- [x] Original character renders in Chromium; three browser screenshots captured (CI artifact). Visual parity with native Veloren still requires hands-on inspection.\n- [ ] Compare procedural animation fidelity with original Veloren (currently simplified).
+
+## P1 checklist
 
 - [x] Fixed timestep (60 Hz) with bounded catch-up and blur reset.
 - [x] Input command sequence and edge-triggered jump.

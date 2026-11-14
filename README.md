@@ -2,7 +2,7 @@
 
 An independent Three.js + TypeScript experiment in reconstructing the foundational systems of [Veloren](https://veloren.net/). Not affiliated with the official game.
 
-**Current milestone: P1.2 — real Veloren Human Female character (blue cloth outfit).** Terrain is still the P1 test fixture.
+**Current milestone: P1.3 — original Veloren Human Female VOX character with distance-driven gait, airborne/landing/roll poses, camera clipping protection and automated Chromium screenshots.** Terrain is still the P1 test fixture.
 
 ## Online preview
 
@@ -44,7 +44,7 @@ npm run typecheck:core
 npm run build
 ```
 
-`npm run test` runs deterministic simulation tests with Node's built-in test runner and TypeScript stripping. `npm run build` checks all TS modules and produces the Vite browser bundle. GitHub Actions also validates each push and stores the built `dist` artifact.
+`npm run test` runs deterministic simulation tests with Node's built-in test runner and TypeScript stripping. `npm run build` checks all TS modules and produces the Vite browser bundle. GitHub Actions also validates each push, renders the site in Chromium with the original VOX model, and uploads screenshot and `dist` artifacts.
 
 ## Documentation
 
@@ -52,6 +52,7 @@ npm run build
 - [Current progress](docs/PROGRESS.md)
 - [P1 review and testing route](docs/P1-REVIEW.md)
 - [P1.1 Veloren control and camera alignment](docs/P1-CONTROLS.md)
+- [P1.3 animation and browser validation](docs/P1-3-ANIMATION.md)
 - [Engineering decisions](docs/DECISIONS.md)
 
 ## Important boundaries
