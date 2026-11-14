@@ -23,3 +23,5 @@ Offsets from `humanoid_head_manifest.ron`, `humanoid_armor_*_manifest.ron`, skel
 `tools/sync-veloren-assets.mjs` downloads the exact original blobs and checks Git blob SHA-1, size and VOX magic. The downloaded binary files go to `public/veloren/`, ignored by Git but packaged under `dist/veloren/` during deployment. No live raw.githubusercontent.com requests are needed by the published demo.
 
 Independent demonstration; not associated with or endorsed by Veloren.
+
+Model geometry verification: `npm run assets:verify` parses all nine source VOX files and checks the twelve-part logical bounds and expected 2,249 input voxels before the build. This does not by itself prove browser frame rendering.

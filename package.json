@@ -11,8 +11,9 @@
     "typecheck:core": "tsc -p tsconfig.core.json --noEmit",
     "preview": "vite preview",
     "assets:sync": "node tools/sync-veloren-assets.mjs",
-    "predev": "npm run assets:sync",
-    "prebuild": "npm run assets:sync"
+    "predev": "npm run assets:sync && npm run assets:verify",
+    "prebuild": "npm run assets:sync && npm run assets:verify",
+    "assets:verify": "node tools/check-veloren-model.mjs"
   },
   "dependencies": {
     "three": "^0.181.0"
