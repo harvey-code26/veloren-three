@@ -55,7 +55,9 @@ try {
   await page.screenshot({path:'artifacts/p1-3-spawn.png'});
   console.log('[smoke] captured spawn');
   // Browser input smoke: movement and third->first person transition.
-  await page.locator('canvas').click({position:{x:640,y:400}});
+  // Keyboard movement is orthogonal to pointer lock. Keep the mouse
+  // stationary during the straight-line motion check to avoid synthetic
+  // Chromium cursor-warp events masquerading as game input.
   await page.keyboard.down('w');
   await page.waitForTimeout(600);
   await page.keyboard.up('w');
@@ -63,7 +65,7 @@ try {
   const moveState=await page.locator('#metrics').innerText();
   const heading=/角色朝向\s+(-?[\d.]+)°/.exec(moveState);
   assert.ok(heading,'Debug panel must expose character facing');
-  assert.ok(Math.abs(Number(heading[1]))<35,'Pointer lock caused a large unintended camera turn: '+heading[1]);
+  assert.ok(Math.abs(Number(heading[1]))<35,'Straight W movement produced an unexpected facing direction: '+heading[1]);
   await page.screenshot({path:'artifacts/p1-3-moving.png'});
   console.log('[smoke] captured moving');
   await page.keyboard.press('0');

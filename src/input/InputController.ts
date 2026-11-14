@@ -60,6 +60,10 @@ export class InputController {
       // The first delta after pointer lock can be a bogus large cursor warp.
       if (this.ignoreInitialMouseDelta) { this.ignoreInitialMouseDelta = false; return; }
       if (performance.now() < this.pointerLockGraceUntil) return;
+      // OS/browser cursor warps can yield a single very large delta even
+      // after the initial grace period. Ignore implausible spikes; normal
+      // motion remains unmodified.
+      if (Math.abs(e.movementX)>120 || Math.abs(e.movementY)>120) return;
       this.controls.look(e.movementX, e.movementY);
     }
   };
