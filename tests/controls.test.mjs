@@ -63,7 +63,7 @@ test('period starts auto-walk; movement key interrupts it', () => {
   controls.press('KeyA');
   const d = controls.consume(2);
   assert.equal(controls.autoWalk, false);
-  assert.ok(Math.abs(d.moveX-1)<1e-9);
+  assert.ok(Math.abs(d.moveX+1)<1e-9);
   assert.ok(Math.abs(d.moveZ)<1e-9);
 });
 
