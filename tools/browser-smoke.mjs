@@ -60,6 +60,10 @@ try {
   await page.waitForTimeout(600);
   await page.keyboard.up('w');
   await page.waitForTimeout(180);
+  const moveState=await page.locator('#metrics').innerText();
+  const heading=/角色朝向\s+(-?[\d.]+)°/.exec(moveState);
+  assert.ok(heading,'Debug panel must expose character facing');
+  assert.ok(Math.abs(Number(heading[1]))<35,'Pointer lock caused a large unintended camera turn: '+heading[1]);
   await page.screenshot({path:'artifacts/p1-3-moving.png'});
   console.log('[smoke] captured moving');
   await page.keyboard.press('0');

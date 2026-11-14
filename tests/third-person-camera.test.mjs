@@ -12,6 +12,9 @@ test('camera hides close-range avatar and returns to normal after obstruction cl
   camera.update(origin,0,0.16,10,[box],'third',1/60);
   assert.ok(camera.effectiveDistance < 1.75);
   assert.equal(camera.shouldHideAvatar,true);
+  camera.camera.updateMatrixWorld(true);
+  const view=camera.camera.getWorldDirection(new THREE.Vector3());
+  assert.ok(view.z < -0.9,'Near-distance fallback looks forward, not into the back of the avatar');
   for(let i=0;i<120;i++) camera.update(origin,0,0.16,10,[],'third',1/60);
   assert.ok(camera.effectiveDistance>8);
   assert.equal(camera.shouldHideAvatar,false);

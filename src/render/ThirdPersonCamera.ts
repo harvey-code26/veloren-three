@@ -49,6 +49,19 @@ export class ThirdPersonCamera {
     else this.smoothedDistance += (safe - this.smoothedDistance) *
       (1 - Math.exp(-Math.min(0.05, Math.max(0, dt)) * 9));
     this.avatarTooClose = this.smoothedDistance < 1.75;
+    if (this.avatarTooClose) {
+      // When a wall pushes the camera into the head, temporarily use an
+      // unobstructed first-person direction instead of showing a blank or
+      // enormous third-person character silhouette.
+      this.camera.position.copy(this.target);
+      this.camera.position.y = position.y + 1.58;
+      this.direction.set(
+        -Math.sin(yaw) * Math.cos(pitch), -Math.sin(pitch),
+        -Math.cos(yaw) * Math.cos(pitch),
+      );
+      this.camera.lookAt(this.camera.position.clone().add(this.direction));
+      return;
+    }
     this.camera.position.copy(this.target).addScaledVector(this.direction, this.smoothedDistance);
     this.camera.lookAt(this.target);
   }
