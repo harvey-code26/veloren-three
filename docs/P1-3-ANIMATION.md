@@ -1,0 +1,32 @@
+# P1.3 — 人物运动与原作资源的浏览器验收
+
+这一轮不扩展世界或战斗，只修正原版 VOX 人物在 P1 测试场中的动画结构，并增加自动浏览器截图。
+
+## 本轮改动
+
+- 移动速度驱动的步态相位：按实际位移距离推动腿部交替，而非按累计秒数重复快速切换
+- 左右脚始终属于原来的骨骼节点；足部抬起量非负，避免交叉和穿地风险
+- 待机独立呼吸，即使完全静止仍保持微动作
+- 区分起跳、下落、落地过渡、行走、奔跑、潜行和翻滚
+- 翻滚以身体中部旋转，而不是绕脚底打转
+- 人物平滑转向：沿最短角度插值，减少瞬时 180 度跳转
+- 自由观察继续保持相机与移动朝向分离；第一人称与现有按键不变
+- F3 调试面板增加动作状态、步态相位与人物朝向
+
+## 技术验证
+
+- 新增纯计算步态测试：不同帧率的位移相位、一左一右步态、倒退、起落、翻滚完整周期、跨 ±π 的平滑转身和动作重置
+- CI `Validate` 现在运行 Chromium 软件 WebGL 的真实网页加载，验证原版 VOX 加载成功、移动、按 0 切换视角，上传三张截图供复核
+- 自动化截图能证明资源加载和渲染管线工作，但无法独立证明它已经与 Veloren 原版动作完全一致
+
+## 需要继续人工比较的点
+
+- 人物侧身与后退移动时的骨架造型
+- 快跑时脚尖是否穿过地形、转身期间鞋子是否打转
+- 原作翻滚对应的具体动画时间线、装备与姿态
+- 滑翔、攀爬、战斗动作尚未接入
+- 手机与 Safari 兼容性尚未验收
+
+参考源码：[`voxygen/anim/src/character/run.rs`](https://github.com/veloren/veloren/blob/cd75076cf157d47c97bdf21c5bd7012cc4959dfc/voxygen/anim/src/character/run.rs)、[`idle.rs`](https://github.com/veloren/veloren/blob/cd75076cf157d47c97bdf21c5bd7012cc4959dfc/voxygen/anim/src/character/idle.rs)、[`jump.rs`](https://github.com/veloren/veloren/blob/cd75076cf157d47c97bdf21c5bd7012cc4959dfc/voxygen/anim/src/character/jump.rs)、[`roll.rs`](https://github.com/veloren/veloren/blob/cd75076cf157d47c97bdf21c5bd7012cc4959dfc/voxygen/anim/src/character/roll.rs)。
+
+**状态：** 代码已提交，CI 和视觉验收必须分别记录，不能由单元测试代替浏览器截图。

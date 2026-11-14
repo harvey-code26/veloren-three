@@ -16,6 +16,16 @@ jobs:
       - run: npm install --no-audit --no-fund
       - run: npm run test
       - run: npm run build
+      - name: Install Chromium for model smoke test
+        run: npx playwright install --with-deps chromium
+      - name: Render original character in headless Chromium
+        run: npm run smoke:browser
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: veloren-three-browser-screenshots
+          path: artifacts/
+          if-no-files-found: warn
       - uses: actions/upload-artifact@v4
         with:
           name: veloren-three-build
