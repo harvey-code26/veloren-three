@@ -1,16 +1,12 @@
 import type { InputCommand } from '../core/types.ts';
+import { VelorenControls, type CameraMode } from './VelorenControls.ts';
 
-/** Browser events are sampled exactly once for each simulation tick. */
+/** DOM adapter for the Veloren keyboard profile. Presses are consumed once/tick. */
 export class InputController {
-  private keys = new Set<string>();
-  private jumpQueued = false;
-  private resetQueued = false;
-  yaw = 0;
-  pitch = 0.37;
-  distance = 7;
-  onToggleDebug: (() => void) | undefined;
-
+  private readonly controls = new VelorenControls();
   private readonly canvas: HTMLCanvasElement;
+  onToggleDebug: (() => void) | undefined;
+  onToggleControls: (() => void) | undefined;
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     window.addEventListener('keydown', this.keydown);
@@ -21,43 +17,51 @@ export class InputController {
     document.addEventListener('mousemove', this.mouseMove);
     canvas.addEventListener('click', this.click);
     canvas.addEventListener('wheel', this.wheel, { passive: false });
+    canvas.addEventListener('mousedown', this.mouseDown);
+    canvas.addEventListener('contextmenu', this.contextMenu);
   }
+  get yaw(): number { return this.controls.yaw; }
+  get pitch(): number { return this.controls.pitch; }
+  get distance(): number { return this.controls.distance; }
+  get cameraMode(): CameraMode { return this.controls.cameraMode; }
+  get freeLook(): boolean { return this.controls.freeLook; }
+  get walking(): boolean { return this.controls.walking; }
+  get autoWalk(): boolean { return this.controls.autoWalk; }
+  get sneaking(): boolean { return this.controls.sneaking; }
+
   private keydown = (e: KeyboardEvent) => {
-    if (e.repeat && (e.code === 'Space' || e.code === 'KeyR' || e.code === 'F3')) return;
-    if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault();
-    if (e.code === 'Space' && !this.keys.has('Space')) this.jumpQueued = true;
-    if (e.code === 'KeyR') this.resetQueued = true;
-    if (e.code === 'F3') this.onToggleDebug?.();
-    this.keys.add(e.code);
+    const managed = ['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight',
+      'Digit0','Period','Comma','KeyB','KeyL','F1','F3','Home'];
+    if (managed.includes(e.code)) e.preventDefault();
+    if (e.repeat && ['F1','F3','Comma'].includes(e.code)) return;
+    if (e.code === 'F1') { this.onToggleControls?.(); return; }
+    if (e.code === 'F3') { this.onToggleDebug?.(); return; }
+    if (e.code === 'Comma') {
+      if (document.pointerLockElement === this.canvas) document.exitPointerLock();
+      else this.lockPointer();
+      return;
+    }
+    this.controls.press(e.code);
   };
-  private keyup = (e: KeyboardEvent) => { this.keys.delete(e.code); };
-  private clear = () => { this.keys.clear(); this.jumpQueued = false; this.resetQueued = false; };
+  private keyup = (e: KeyboardEvent) => this.controls.release(e.code);
+  private clear = () => this.controls.clear();
   private visibility = () => { if (document.hidden) this.clear(); };
   private pointerLockChanged = () => { if (document.pointerLockElement !== this.canvas) this.clear(); };
   private mouseMove = (e: MouseEvent) => {
-    if (document.pointerLockElement !== this.canvas) return;
-    this.yaw -= e.movementX * 0.003;
-    this.pitch = Math.max(-0.12, Math.min(1.1, this.pitch + e.movementY * 0.0023));
+    if (document.pointerLockElement === this.canvas) this.controls.look(e.movementX, e.movementY);
   };
-  private click = () => { void this.canvas.requestPointerLock?.(); };
-  private wheel = (e: WheelEvent) => {
-    e.preventDefault();
-    this.distance = Math.max(3, Math.min(12, this.distance + e.deltaY * 0.008));
-  };
-
-  consume(tick: number): InputCommand {
-    if (this.keys.has('KeyQ')) this.yaw += 0.035;
-    if (this.keys.has('KeyE')) this.yaw -= 0.035;
-    const forward = Number(this.keys.has('KeyW') || this.keys.has('ArrowUp')) - Number(this.keys.has('KeyS') || this.keys.has('ArrowDown'));
-    const sideways = Number(this.keys.has('KeyD') || this.keys.has('ArrowRight')) - Number(this.keys.has('KeyA') || this.keys.has('ArrowLeft'));
-    const x = sideways * Math.cos(this.yaw) - forward * Math.sin(this.yaw);
-    const z = -sideways * Math.sin(this.yaw) - forward * Math.cos(this.yaw);
-    const jump = this.jumpQueued;
-    const reset = this.resetQueued;
-    this.jumpQueued = false;
-    this.resetQueued = false;
-    return { tick, moveX: x, moveZ: z, sprint: this.keys.has('ShiftLeft') || this.keys.has('ShiftRight'), jump, reset };
+  private lockPointer(): void {
+    void Promise.resolve(this.canvas.requestPointerLock?.()).catch(() => {});
   }
+  private click = () => this.lockPointer();
+  private wheel = (e: WheelEvent) => { e.preventDefault(); this.controls.zoom(e.deltaY); };
+  private mouseDown = (e: MouseEvent) => {
+    if (e.button !== 1) return;
+    e.preventDefault();
+    this.controls.queueRoll(); // Veloren middle-click roll, simplified P1 movement.
+  };
+  private contextMenu = (e: MouseEvent) => e.preventDefault();
+  consume(tick: number): InputCommand { return this.controls.consume(tick); }
   dispose(): void {
     window.removeEventListener('keydown', this.keydown);
     window.removeEventListener('keyup', this.keyup);
@@ -67,5 +71,7 @@ export class InputController {
     document.removeEventListener('mousemove', this.mouseMove);
     this.canvas.removeEventListener('click', this.click);
     this.canvas.removeEventListener('wheel', this.wheel);
+    this.canvas.removeEventListener('mousedown', this.mouseDown);
+    this.canvas.removeEventListener('contextmenu', this.contextMenu);
   }
 }

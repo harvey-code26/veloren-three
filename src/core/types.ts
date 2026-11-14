@@ -3,7 +3,9 @@ export interface InputCommand {
   tick: number;
   moveX: number;
   moveZ: number;
-  sprint: boolean;
+  sprint: boolean; // regular run, unless toggled to walking
+  sneak?: boolean;
+  roll?: boolean;
   jump: boolean; // edge-triggered, consumed once per press
   reset: boolean;
 }

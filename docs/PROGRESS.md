@@ -1,6 +1,6 @@
 # Progress tracker
 
-Updated: 2026-11-13
+Updated: 2026-11-14
 
 | Milestone | Status | Evidence |
 | --- | --- | --- |
@@ -22,7 +22,7 @@ Updated: 2026-11-13
 - [x] Pages hosting enabled; deployment successful ([GitHub Actions successful rerun](https://github.com/harvey-code26/veloren-three/actions/runs/43443419909)).
 - [ ] Remote browser gameplay smoke test: awaiting user hands-on review. GitHub deploy job reported success and the [published address](https://harvey-code26.github.io/veloren-three/); independent browser rendering check not yet recorded.
 
-## P1 checklist
+## P1.1 control & camera alignment (pending CI / hands-on)\n\n- [x] Match source keybindings: B walk, Shift sneak, L free look, . auto-walk, 0 camera mode, comma cursor, middle-click roll.\n- [x] Restore R/E/Ctrl to their reserved original meanings (no longer misuse R for respawn).\n- [x] Implement camera mode change and free-look independent movement bearing.\n- [x] Add pure input/control tests and simplified dodge movement.\n- [ ] GitHub tests/build green for this commit.\n- [ ] Browser movement/camera user review and original-game comparison.\n\n## P1 checklist
 
 - [x] Fixed timestep (60 Hz) with bounded catch-up and blur reset.
 - [x] Input command sequence and edge-triggered jump.

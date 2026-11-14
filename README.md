@@ -22,11 +22,11 @@ Open the local URL printed by Vite. Click the scene to lock the cursor and rotat
 | Control | Action |
 | --- | --- |
 | W A S D / arrow keys | Move relative to camera |
-| Mouse (after click) / Q E | Orbit camera |
+| Mouse (after click) | Orbit camera |
 | Space | Jump |
-| Shift | Sprint |
-| Mouse wheel | Zoom |
-| R | Respawn at test start |
+| B | Toggle walk (run by default) |\n| Shift | Sneak (slower) |
+| Mouse wheel | Zoom / enter first-person |\n| 0 | Toggle first/third person |\n| L | Toggle free look |\n| . | Toggle auto-walk |\n| , | Toggle mouse cursor |\n| Middle mouse | Simplified roll |\n| F1 | Toggle help |
+| Home | Reset to test spawn (developer-only) |
 | F3 | Toggle debug panel |
 
 ## Test and build
@@ -43,7 +43,7 @@ npm run build
 
 - [Research, architecture and P0–P10 checklist](docs/PLAN.md)
 - [Current progress](docs/PROGRESS.md)
-- [P1 review and testing route](docs/P1-REVIEW.md)
+- [P1 review and testing route](docs/P1-REVIEW.md)\n- [P1.1 Veloren control and camera alignment](docs/P1-CONTROLS.md)
 - [Engineering decisions](docs/DECISIONS.md)
 
 ## Important boundaries
