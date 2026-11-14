@@ -1,11 +1,13 @@
 import * as THREE from 'three';
 import { VOXLoader } from 'three/addons/loaders/VOXLoader.js';
 import manifest from '../../assets/veloren-human-female.json';
+import { CharacterMotion, type MotionInput, type CharacterPose } from './CharacterMotion.ts';
 
 /** Original Veloren VOX pieces; simplified original-code Three.js articulated rig. */
 export interface AvatarVisual {
   group: THREE.Group;
-  animate(speed: number, elapsed: number, airborne?: boolean, rolling?: boolean): void;
+  animate(input: MotionInput, dt: number): CharacterPose;
+  reset(): void;
 }
 type VoxChunk = {size:{x:number;y:number;z:number};data:Uint8Array;palette:number[]};
 type Color3 = readonly [number, number, number];
@@ -74,7 +76,11 @@ async function attach(parent:THREE.Object3D,id:string,offset:readonly[number,num
 export async function createVelorenCharacter():Promise<AvatarVisual>{
   const root=new THREE.Group();
   root.name='Veloren Human Female (original VOX)';
-  const torso=joint(root),chest=joint(torso,0,8),head=joint(chest,0,9.5,-2);
+  // Roll about the body's approximate centre, never around the sole of a foot.
+  // Pivot height is expressed in upstream ~25-unit skeleton coordinates.
+  const bodyPivot=joint(root,0,12);
+  const torso=joint(bodyPivot,0,-12);
+  const chest=joint(torso,0,8),head=joint(chest,0,9.5,-2);
   const belt=joint(chest,0,-2),pants=joint(chest,0,-5);
   const leftHand=joint(chest,-7,0.5,-0.25),rightHand=joint(chest,7,0.5,-0.25);
   const leftFoot=joint(torso,-3.4,2,0.5),rightFoot=joint(torso,3.4,2,0.5);
@@ -99,22 +105,35 @@ export async function createVelorenCharacter():Promise<AvatarVisual>{
   const h=box.max.y-box.min.y;
   if(!Number.isFinite(h)||h<10)throw Error('Veloren rig dimensions invalid: '+h);
   root.scale.setScalar(1.72/h);
-  torso.position.y-=box.min.y;
+  bodyPivot.position.y-=box.min.y;
   const baseLeft=leftFoot.position.clone(),baseRight=rightFoot.position.clone();
+  const pivotY=bodyPivot.position.y;
+  const motion=new CharacterMotion();
   return {
     group:root,
-    animate(speed,elapsed,airborne=false,rolling=false){
-      const weight=airborne?0:Math.min(1,speed/7.5),phase=elapsed*(7+weight*4),stride=Math.sin(phase);
-      leftFoot.position.copy(baseLeft);rightFoot.position.copy(baseRight);
-      leftFoot.position.y+=Math.max(0,stride)*weight*1.15;
-      rightFoot.position.y+=Math.max(0,-stride)*weight*1.15;
-      leftFoot.rotation.x=airborne?-.12:stride*weight*.24;
-      rightFoot.rotation.x=airborne?.12:-stride*weight*.24;
-      leftHand.rotation.x=airborne?-.18:-stride*weight*.35;
-      rightHand.rotation.x=airborne?-.18:stride*weight*.35;
-      chest.position.y=8+Math.sin(elapsed*1.6)*.12+Math.abs(stride)*weight*.12;
-      head.rotation.z=Math.sin(elapsed*.85)*.018;
-      torso.rotation.z=rolling?.25:stride*weight*.02;
+    reset(){ motion.reset(); },
+    animate(input:MotionInput,dt:number):CharacterPose{
+      const pose=motion.step(input,dt);
+      // Stable bilateral joints: never transfer a mesh to the opposite foot.
+      leftFoot.position.copy(baseLeft);
+      rightFoot.position.copy(baseRight);
+      leftFoot.position.y += pose.leftFoot.lift;
+      rightFoot.position.y += pose.rightFoot.lift;
+      leftFoot.position.z -= pose.leftFoot.forward;
+      rightFoot.position.z -= pose.rightFoot.forward;
+      leftFoot.rotation.x=pose.leftFoot.pitch;
+      rightFoot.rotation.x=pose.rightFoot.pitch;
+      leftHand.rotation.x=pose.leftArmPitch;
+      rightHand.rotation.x=pose.rightArmPitch;
+      leftShoulder.rotation.x=pose.leftArmPitch*0.22;
+      rightShoulder.rotation.x=pose.rightArmPitch*0.22;
+      chest.position.y=8+pose.chestBob;
+      head.position.y=9.5+pose.headBob;
+      head.rotation.y=pose.headLookYaw;
+      head.rotation.z=Math.sin(pose.phase)*pose.locomotion*0.018;
+      bodyPivot.position.y=pivotY+pose.rollLift;
+      bodyPivot.rotation.set(pose.rollAngle+pose.torsoPitch,0,pose.torsoRoll);
+      return pose;
     }
   };
 }

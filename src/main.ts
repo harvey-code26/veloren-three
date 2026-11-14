@@ -5,6 +5,7 @@ import { InputController } from './input/InputController.ts';
 import { FixtureCollisionWorld } from './physics/CollisionWorld.ts';
 import { addTestGround, createTestAvatar } from './render/TestScene.ts';
 import { createVelorenCharacter, type AvatarVisual } from './render/VelorenCharacter.ts';
+import { dampYaw, shortestYaw } from './render/CharacterMotion.ts';
 import { ThirdPersonCamera } from './render/ThirdPersonCamera.ts';
 import { TEST_GROUND } from './world/TestGround.ts';
 import './style.css';
@@ -33,9 +34,10 @@ sun.shadow.normalBias = 0.025;
 scene.add(sun);
 
 const obstacles = addTestGround(scene);
-let avatar: AvatarVisual = createTestAvatar(scene);
+const placeholder = createTestAvatar(scene);
+let avatar: AvatarVisual | null = null;
+placeholder.group.visible = false;
 let avatarReady = false;
-avatar.group.visible = false;
 const orbit = new ThirdPersonCamera();
 const clock = new FixedStepClock(60, 5);
 const simulation = new Simulation(new FixtureCollisionWorld(TEST_GROUND.map(f => f.box)));
@@ -45,7 +47,7 @@ const overlay = document.createElement('div');
 overlay.className = 'hud';
 overlay.innerHTML = `
   <section class="panel brand"><small>VE L O R E N · THREE</small><h1>底层运动测试场</h1>
-  <p>P1.2 · Veloren 原版 Human Female / 蓝色布甲 VOX 部件。</p><p id="asset-status" aria-live="polite">正在加载原作模型...</p></section>
+  <p>P1.3 · 原版 VOX 人物 + 独立步态、空中及翻滚动作。</p><p id="asset-status" aria-live="polite">正在加载原作模型...</p></section>
   <section id="debug" class="panel debug"><h2>模拟状态 <kbd>F3</kbd></h2><pre id="metrics">初始化中</pre></section>
   <section class="panel controls"><strong>操作说明</strong><p><kbd>W A S D</kbd> 移动　<kbd>Space</kbd> 跳跃　<kbd>B</kbd> 切换步行</p>
   <p>鼠标控制视角、滚轮缩放至第一人称；<kbd>0</kbd> 切换第一/第三人称；<kbd>,</kbd> 释放/捕获鼠标</p>
@@ -62,7 +64,7 @@ input.onToggleDebug = () => { debugPanel.hidden = !debugPanel.hidden; };
 input.onToggleControls = () => { controlsPanel.hidden = !controlsPanel.hidden; };
 
 void createVelorenCharacter().then(real => {
-  scene.remove(avatar.group); avatar = real; scene.add(real.group); avatarReady = true;
+  scene.remove(placeholder.group); avatar = real; scene.add(real.group); avatarReady = true;
   assetStatus!.textContent = '原作人物装配完成 · Human Female / Cloth Blue';
 }).catch(error => {
   console.error('Veloren original asset load failed', error);
@@ -85,6 +87,7 @@ let elapsed = 0;
 let fps = 0;
 let simulationMs = 0;
 const renderPosition = new THREE.Vector3();
+let facingYaw=0;
 function frame(nowMs: number): void {
   if (document.hidden) {
     previousFrameTime = null;
@@ -95,7 +98,9 @@ function frame(nowMs: number): void {
   previousFrameTime = nowMs;
   const start = performance.now();
   const result = clock.advance(dt, step => {
-    simulation.step(input.consume(simulation.snapshot().tick + 1), step);
+    const command=input.consume(simulation.snapshot().tick+1);
+    if (command.reset) { avatar?.reset(); facingYaw=input.yaw; }
+    simulation.step(command,step);
   });
   simulationMs = performance.now() - start;
   const state = simulation.snapshot();
@@ -104,12 +109,25 @@ function frame(nowMs: number): void {
     THREE.MathUtils.lerp(state.previous.y, state.position.y, result.alpha),
     THREE.MathUtils.lerp(state.previous.z, state.position.z, result.alpha),
   );
-  avatar.group.position.copy(renderPosition);
-  avatar.group.visible = avatarReady && input.cameraMode !== 'first';
-  const speed = Math.hypot(state.velocity.x, state.velocity.z);
-  if (speed > 0.2) avatar.group.rotation.y = Math.atan2(-state.velocity.x, -state.velocity.z);
-  elapsed += Math.min(dt, 0.1) * (state.grounded ? 1 : 0);
-  avatar.animate(state.grounded ? speed : 0, elapsed, !state.grounded, state.rolling);
+  const display = avatar?.group ?? placeholder.group;
+  display.position.copy(renderPosition);
+  display.visible = avatarReady && input.cameraMode !== 'first';
+  const speed = Math.hypot(state.velocity.x,state.velocity.z);
+  if (speed > 0.16) {
+    facingYaw = dampYaw(facingYaw,Math.atan2(-state.velocity.x,-state.velocity.z),14,dt);
+  } else if (input.cameraMode === 'first' && !input.freeLook) {
+    facingYaw = dampYaw(facingYaw,input.yaw,14,dt);
+  }
+  display.rotation.y=facingYaw;
+  elapsed += Math.min(dt,0.05);
+  const forward=-Math.sin(facingYaw)*state.velocity.x-Math.cos(facingYaw)*state.velocity.z;
+  const strafe=Math.cos(facingYaw)*state.velocity.x-Math.sin(facingYaw)*state.velocity.z;
+  const pose=avatar?.animate({
+    speed,forward,strafe,verticalSpeed:state.velocity.y,grounded:state.grounded,
+    rolling:state.rolling,sneaking:input.sneaking,walking:input.walking,
+    lookYaw:shortestYaw(facingYaw,input.yaw),
+  },dt);
+  if (!avatar && avatarReady) placeholder.animate(state.grounded?speed:0,elapsed);
   orbit.update({ x: renderPosition.x, y: renderPosition.y, z: renderPosition.z }, input.yaw, input.pitch, input.distance, obstacles, input.cameraMode, dt);
   renderer.render(scene, orbit.camera);
 
@@ -117,7 +135,7 @@ function frame(nowMs: number): void {
   if (statsTime >= 0.4) {
     fps = Math.round(frames / statsTime);
     frames = 0; statsTime = 0;
-    metrics!.textContent = `镜头              ${input.cameraMode === 'first' ? '第一人称' : '第三人称'}\n视角距离          ${input.distance.toFixed(1)} m\n行走模式          ${input.sneaking ? '潜行' : input.walking ? '步行' : '奔跑'}\n自由观察 / 自动走  ${input.freeLook ? '开启' : '关闭'} / ${input.autoWalk ? '开启' : '关闭'}\n翻滚              ${state.rolling ? '进行中' : '未触发'}\nFPS             ${fps}\n模拟 tick        ${state.tick} (目标 60 Hz)\n本帧模拟步数      ${result.steps}\n模拟耗时          ${simulationMs.toFixed(2)} ms\n位置 x/y/z        ${state.position.x.toFixed(2)} / ${state.position.y.toFixed(2)} / ${state.position.z.toFixed(2)}\n水平速度          ${speed.toFixed(2)} m/s\n竖直速度          ${state.velocity.y.toFixed(2)} m/s\n接地              ${state.grounded ? '是' : '否'}\n累计碰撞          ${state.collisions}\n丢弃模拟时间      ${clock.droppedSeconds.toFixed(2)} s\n绘制调用          ${renderer.info.render.calls}`;
+    metrics!.textContent = `动作              ${pose?.state ?? '模型加载中'}\n步态相位          ${pose?.phase.toFixed(2) ?? '-'}\n角色朝向          ${(facingYaw*180/Math.PI).toFixed(1)}°\n镜头              ${input.cameraMode === 'first' ? '第一人称' : '第三人称'}\n视角距离          ${input.distance.toFixed(1)} m\n行走模式          ${input.sneaking ? '潜行' : input.walking ? '步行' : '奔跑'}\n自由观察 / 自动走  ${input.freeLook ? '开启' : '关闭'} / ${input.autoWalk ? '开启' : '关闭'}\n翻滚              ${state.rolling ? '进行中' : '未触发'}\nFPS             ${fps}\n模拟 tick        ${state.tick} (目标 60 Hz)\n本帧模拟步数      ${result.steps}\n模拟耗时          ${simulationMs.toFixed(2)} ms\n位置 x/y/z        ${state.position.x.toFixed(2)} / ${state.position.y.toFixed(2)} / ${state.position.z.toFixed(2)}\n水平速度          ${speed.toFixed(2)} m/s\n竖直速度          ${state.velocity.y.toFixed(2)} m/s\n接地              ${state.grounded ? '是' : '否'}\n累计碰撞          ${state.collisions}\n丢弃模拟时间      ${clock.droppedSeconds.toFixed(2)} s\n绘制调用          ${renderer.info.render.calls}`;
   }
 }
 window.addEventListener('blur', () => { previousFrameTime = null; clock.reset(); });
