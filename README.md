@@ -6,7 +6,7 @@ An independent Three.js + TypeScript experiment in reconstructing the foundation
 
 ## Online preview
 
-Deployment workflow: [Deploy to GitHub Pages](.github/workflows/deploy.yml). Published URL: <https://harvey-code26.github.io/veloren-three/> ([GitHub Pages deployment confirmed](https://github.com/harvey-code26/veloren-three/actions/runs/43443419909)). See [deployment notes](docs/DEPLOYMENT.md).
+Deployment workflow: [Deploy to GitHub Pages](.github/workflows/deploy.yml). Published URL: <https://harvey-code26.github.io/veloren-three/> ([current P1.1 deployment](https://github.com/harvey-code26/veloren-three/actions/runs/43539307461)). See [deployment notes](docs/DEPLOYMENT.md).
 
 ## Run
 
@@ -24,8 +24,15 @@ Open the local URL printed by Vite. Click the scene to lock the cursor and rotat
 | W A S D / arrow keys | Move relative to camera |
 | Mouse (after click) | Orbit camera |
 | Space | Jump |
-| B | Toggle walk (run by default) |\n| Shift | Sneak (slower) |
-| Mouse wheel | Zoom / enter first-person |\n| 0 | Toggle first/third person |\n| L | Toggle free look |\n| . | Toggle auto-walk |\n| , | Toggle mouse cursor |\n| Middle mouse | Simplified roll |\n| F1 | Toggle help |
+| B | Toggle walk (run by default) |
+| Shift | Sneak (slower) |
+| Mouse wheel | Zoom / enter first-person |
+| 0 | Toggle first/third person |
+| L | Toggle free look |
+| . | Toggle auto-walk |
+| , | Toggle mouse cursor |
+| Middle mouse | Simplified roll |
+| F1 | Toggle help |
 | Home | Reset to test spawn (developer-only) |
 | F3 | Toggle debug panel |
 
@@ -43,7 +50,8 @@ npm run build
 
 - [Research, architecture and P0–P10 checklist](docs/PLAN.md)
 - [Current progress](docs/PROGRESS.md)
-- [P1 review and testing route](docs/P1-REVIEW.md)\n- [P1.1 Veloren control and camera alignment](docs/P1-CONTROLS.md)
+- [P1 review and testing route](docs/P1-REVIEW.md)
+- [P1.1 Veloren control and camera alignment](docs/P1-CONTROLS.md)
 - [Engineering decisions](docs/DECISIONS.md)
 
 ## Important boundaries
