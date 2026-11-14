@@ -9,9 +9,14 @@
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
     "typecheck:core": "tsc -p tsconfig.core.json --noEmit",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "assets:sync": "node tools/sync-veloren-assets.mjs",
+    "predev": "npm run assets:sync",
+    "prebuild": "npm run assets:sync"
   },
-  "dependencies": { "three": "^0.181.0" },
+  "dependencies": {
+    "three": "^0.181.0"
+  },
   "devDependencies": {
     "@types/three": "^0.181.0",
     "typescript": "^5.9.3",

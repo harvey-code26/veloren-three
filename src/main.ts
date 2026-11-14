@@ -4,6 +4,7 @@ import { Simulation } from './core/Simulation.ts';
 import { InputController } from './input/InputController.ts';
 import { FixtureCollisionWorld } from './physics/CollisionWorld.ts';
 import { addTestGround, createTestAvatar } from './render/TestScene.ts';
+import { createVelorenCharacter, type AvatarVisual } from './render/VelorenCharacter.ts';
 import { ThirdPersonCamera } from './render/ThirdPersonCamera.ts';
 import { TEST_GROUND } from './world/TestGround.ts';
 import './style.css';
@@ -32,7 +33,9 @@ sun.shadow.normalBias = 0.025;
 scene.add(sun);
 
 const obstacles = addTestGround(scene);
-const avatar = createTestAvatar(scene);
+let avatar: AvatarVisual = createTestAvatar(scene);
+let avatarReady = false;
+avatar.group.visible = false;
 const orbit = new ThirdPersonCamera();
 const clock = new FixedStepClock(60, 5);
 const simulation = new Simulation(new FixtureCollisionWorld(TEST_GROUND.map(f => f.box)));
@@ -42,7 +45,7 @@ const overlay = document.createElement('div');
 overlay.className = 'hud';
 overlay.innerHTML = `
   <section class="panel brand"><small>VE L O R E N · THREE</small><h1>底层运动测试场</h1>
-  <p>P1 · 运动学角色 + 手工碰撞体。体素世界、战斗、资源尚未接入。</p></section>
+  <p>P1.2 · Veloren 原版 Human Female / 蓝色布甲 VOX 部件。</p><p id="asset-status" aria-live="polite">正在加载原作模型...</p></section>
   <section id="debug" class="panel debug"><h2>模拟状态 <kbd>F3</kbd></h2><pre id="metrics">初始化中</pre></section>
   <section class="panel controls"><strong>操作说明</strong><p><kbd>W A S D</kbd> 移动　<kbd>Space</kbd> 跳跃　<kbd>B</kbd> 切换步行</p>
   <p>鼠标控制视角、滚轮缩放至第一人称；<kbd>0</kbd> 切换第一/第三人称；<kbd>,</kbd> 释放/捕获鼠标</p>
@@ -51,11 +54,21 @@ overlay.innerHTML = `
   <p><kbd>E</kbd> 交互 / <kbd>R</kbd> 收放武器 / <kbd>Ctrl</kbd> 滑翔：已预留，尚未实现</p></section>`;
 app.appendChild(overlay);
 const controlsPanel = overlay.querySelector<HTMLElement>('.controls');
+const assetStatus = overlay.querySelector<HTMLElement>('#asset-status');
 const debugPanel = overlay.querySelector<HTMLElement>('#debug');
 const metrics = overlay.querySelector<HTMLElement>('#metrics');
-if (!debugPanel || !metrics || !controlsPanel) throw new Error('Missing diagnostics');
+if (!debugPanel || !metrics || !controlsPanel || !assetStatus) throw new Error('Missing diagnostics');
 input.onToggleDebug = () => { debugPanel.hidden = !debugPanel.hidden; };
 input.onToggleControls = () => { controlsPanel.hidden = !controlsPanel.hidden; };
+
+void createVelorenCharacter().then(real => {
+  scene.remove(avatar.group); avatar = real; scene.add(real.group); avatarReady = true;
+  assetStatus!.textContent = '原作人物装配完成 · Human Female / Cloth Blue';
+}).catch(error => {
+  console.error('Veloren original asset load failed', error);
+  avatarReady = true; assetStatus!.classList.add('asset-error');
+  assetStatus!.textContent = '原作资源加载失败，已显示测试占位人物';
+});
 
 function resize(): void {
   const w = Math.max(1, window.innerWidth); const h = Math.max(1, window.innerHeight);
@@ -92,11 +105,11 @@ function frame(nowMs: number): void {
     THREE.MathUtils.lerp(state.previous.z, state.position.z, result.alpha),
   );
   avatar.group.position.copy(renderPosition);
-  avatar.group.visible = input.cameraMode !== 'first';
+  avatar.group.visible = avatarReady && input.cameraMode !== 'first';
   const speed = Math.hypot(state.velocity.x, state.velocity.z);
   if (speed > 0.2) avatar.group.rotation.y = Math.atan2(-state.velocity.x, -state.velocity.z);
   elapsed += Math.min(dt, 0.1) * (state.grounded ? 1 : 0);
-  avatar.animate(state.grounded ? speed : 0, elapsed);
+  avatar.animate(state.grounded ? speed : 0, elapsed, !state.grounded, state.rolling);
   orbit.update({ x: renderPosition.x, y: renderPosition.y, z: renderPosition.z }, input.yaw, input.pitch, input.distance, obstacles, input.cameraMode, dt);
   renderer.render(scene, orbit.camera);
 

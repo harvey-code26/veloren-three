@@ -7,3 +7,6 @@ coverage/
 .env
 .env.*
 !.env.example
+
+# Original Veloren assets are pinned and downloaded during build.
+public/veloren/

@@ -2,7 +2,7 @@
 
 An independent Three.js + TypeScript experiment in reconstructing the foundational systems of [Veloren](https://veloren.net/). Not affiliated with the official game.
 
-**Current milestone: P1 core movement test field.** It is a development fixture, not a voxel game yet.
+**Current milestone: P1.2 — real Veloren Human Female character (blue cloth outfit).** Terrain is still the P1 test fixture.
 
 ## Online preview
 
@@ -58,5 +58,5 @@ npm run build
 
 - Simulation is TypeScript data; Three.js only renders it.
 - P1 uses handcrafted collision boxes. P2 will add voxels; P3 will add chunk streaming.
-- This repository currently contains original code and primitive test shapes only, no Veloren media.
+- Build-time asset sync downloads nine original Veloren VOX sources, verifies their exact Git blob SHA, and includes them in the built site. See [asset provenance](docs/ASSET-SOURCES.md).
 - Veloren code is GPL-3.0-or-later and individual assets may have separate restrictions. Review licenses and attribution before any upstream reuse or publication of derivatives.
