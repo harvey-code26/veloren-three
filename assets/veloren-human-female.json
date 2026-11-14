@@ -1,0 +1,62 @@
+{
+  "source": "Veloren GitHub mirror (original VOX assets)",
+  "sourceRepository": "veloren/veloren",
+  "sourceCommit": "cd75076cf157d47c97bdf21c5bd7012cc4959dfc",
+  "license": "GPL-3.0-or-later (default asset license; see upstream assets/credits.ron for exceptions)",
+  "files": [
+    {
+      "id": "head",
+      "path": "figure/head/human/female.vox",
+      "gitBlob": "657801151c7a5ad0b75666772d6afbc68f46e643",
+      "size": 3344
+    },
+    {
+      "id": "eyes",
+      "path": "figure/eyes/general/female_default-0.vox",
+      "gitBlob": "9e6672677afc9f8b8db403171072ac4bf79fccc4",
+      "size": 1152
+    },
+    {
+      "id": "hair",
+      "path": "figure/hair/human/female-0.vox",
+      "gitBlob": "98c85bf601d61d58ee75c91a8bfb3323396b814d",
+      "size": 3052
+    },
+    {
+      "id": "chest",
+      "path": "armor/cloth_blue/chest.vox",
+      "gitBlob": "da3ee9fcf51a6f6ed8d3a6b8b541d027787bacc3",
+      "size": 2688
+    },
+    {
+      "id": "pants",
+      "path": "armor/cloth_blue/pants.vox",
+      "gitBlob": "728f565be4acd98b070bcfe8189d275d5c63a47c",
+      "size": 2312
+    },
+    {
+      "id": "belt",
+      "path": "armor/cloth_blue/belt.vox",
+      "gitBlob": "99262e58721423eb4a6428ff050d7be1df451590",
+      "size": 1480
+    },
+    {
+      "id": "hand",
+      "path": "armor/cloth_blue/hand.vox",
+      "gitBlob": "314f5f497ba5c2bf584dbc3dc28e7f882a7a4941",
+      "size": 1240
+    },
+    {
+      "id": "foot",
+      "path": "armor/cloth_blue/foot.vox",
+      "gitBlob": "2f2461fba6f5c3b2a0836440b5f5ecad3d8a244c",
+      "size": 1480
+    },
+    {
+      "id": "shoulder",
+      "path": "armor/cloth_blue/shoulder_0.vox",
+      "gitBlob": "3af71b87caaf345953340e283a5be2777e0ca814",
+      "size": 1340
+    }
+  ]
+}
