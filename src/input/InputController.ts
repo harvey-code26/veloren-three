@@ -7,6 +7,7 @@ export class InputController {
   private readonly canvas: HTMLCanvasElement;
   onToggleDebug: (() => void) | undefined;
   onToggleControls: (() => void) | undefined;
+  private ignoreInitialMouseDelta = false;
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     window.addEventListener('keydown', this.keydown);
@@ -46,9 +47,16 @@ export class InputController {
   private keyup = (e: KeyboardEvent) => this.controls.release(e.code);
   private clear = () => this.controls.clear();
   private visibility = () => { if (document.hidden) this.clear(); };
-  private pointerLockChanged = () => { if (document.pointerLockElement !== this.canvas) this.clear(); };
+  private pointerLockChanged = () => {
+    if (document.pointerLockElement === this.canvas) this.ignoreInitialMouseDelta = true;
+    else { this.ignoreInitialMouseDelta = false; this.clear(); }
+  };
   private mouseMove = (e: MouseEvent) => {
-    if (document.pointerLockElement === this.canvas) this.controls.look(e.movementX, e.movementY);
+    if (document.pointerLockElement === this.canvas) {
+      // The first delta after pointer lock can be a bogus large cursor warp.
+      if (this.ignoreInitialMouseDelta) { this.ignoreInitialMouseDelta = false; return; }
+      this.controls.look(e.movementX, e.movementY);
+    }
   };
   private lockPointer(): void {
     void Promise.resolve(this.canvas.requestPointerLock?.()).catch(() => {});

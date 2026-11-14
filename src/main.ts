@@ -129,13 +129,16 @@ function frame(nowMs: number): void {
   },dt);
   if (!avatar && avatarReady) placeholder.animate(state.grounded?speed:0,elapsed);
   orbit.update({ x: renderPosition.x, y: renderPosition.y, z: renderPosition.z }, input.yaw, input.pitch, input.distance, obstacles, input.cameraMode, dt);
+  // Behind a wall the camera may be forced into the avatar's body; suppress it
+  // until there is enough clearance for a readable third-person frame.
+  display.visible = avatarReady && !orbit.shouldHideAvatar;
   renderer.render(scene, orbit.camera);
 
   frames++; statsTime += dt;
   if (statsTime >= 0.4) {
     fps = Math.round(frames / statsTime);
     frames = 0; statsTime = 0;
-    metrics!.textContent = `动作              ${pose?.state ?? '模型加载中'}\n步态相位          ${pose?.phase.toFixed(2) ?? '-'}\n角色朝向          ${(facingYaw*180/Math.PI).toFixed(1)}°\n镜头              ${input.cameraMode === 'first' ? '第一人称' : '第三人称'}\n视角距离          ${input.distance.toFixed(1)} m\n行走模式          ${input.sneaking ? '潜行' : input.walking ? '步行' : '奔跑'}\n自由观察 / 自动走  ${input.freeLook ? '开启' : '关闭'} / ${input.autoWalk ? '开启' : '关闭'}\n翻滚              ${state.rolling ? '进行中' : '未触发'}\nFPS             ${fps}\n模拟 tick        ${state.tick} (目标 60 Hz)\n本帧模拟步数      ${result.steps}\n模拟耗时          ${simulationMs.toFixed(2)} ms\n位置 x/y/z        ${state.position.x.toFixed(2)} / ${state.position.y.toFixed(2)} / ${state.position.z.toFixed(2)}\n水平速度          ${speed.toFixed(2)} m/s\n竖直速度          ${state.velocity.y.toFixed(2)} m/s\n接地              ${state.grounded ? '是' : '否'}\n累计碰撞          ${state.collisions}\n丢弃模拟时间      ${clock.droppedSeconds.toFixed(2)} s\n绘制调用          ${renderer.info.render.calls}`;
+    metrics!.textContent = `实际镜头距        ${orbit.effectiveDistance.toFixed(2)} m\n自动隐藏模型      ${orbit.shouldHideAvatar ? '是' : '否'}\n动作              ${pose?.state ?? '模型加载中'}\n步态相位          ${pose?.phase.toFixed(2) ?? '-'}\n角色朝向          ${(facingYaw*180/Math.PI).toFixed(1)}°\n镜头              ${input.cameraMode === 'first' ? '第一人称' : '第三人称'}\n视角距离          ${input.distance.toFixed(1)} m\n行走模式          ${input.sneaking ? '潜行' : input.walking ? '步行' : '奔跑'}\n自由观察 / 自动走  ${input.freeLook ? '开启' : '关闭'} / ${input.autoWalk ? '开启' : '关闭'}\n翻滚              ${state.rolling ? '进行中' : '未触发'}\nFPS             ${fps}\n模拟 tick        ${state.tick} (目标 60 Hz)\n本帧模拟步数      ${result.steps}\n模拟耗时          ${simulationMs.toFixed(2)} ms\n位置 x/y/z        ${state.position.x.toFixed(2)} / ${state.position.y.toFixed(2)} / ${state.position.z.toFixed(2)}\n水平速度          ${speed.toFixed(2)} m/s\n竖直速度          ${state.velocity.y.toFixed(2)} m/s\n接地              ${state.grounded ? '是' : '否'}\n累计碰撞          ${state.collisions}\n丢弃模拟时间      ${clock.droppedSeconds.toFixed(2)} s\n绘制调用          ${renderer.info.render.calls}`;
   }
 }
 window.addEventListener('blur', () => { previousFrameTime = null; clock.reset(); });

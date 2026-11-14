@@ -55,7 +55,7 @@ try {
   await page.screenshot({path:'artifacts/p1-3-spawn.png'});
   console.log('[smoke] captured spawn');
   // Browser input smoke: movement and third->first person transition.
-  await page.locator('canvas').click({position:{x:900,y:400}});
+  await page.locator('canvas').click({position:{x:640,y:400}});
   await page.keyboard.down('w');
   await page.waitForTimeout(600);
   await page.keyboard.up('w');

@@ -30,3 +30,7 @@
 参考源码：[`voxygen/anim/src/character/run.rs`](https://github.com/veloren/veloren/blob/cd75076cf157d47c97bdf21c5bd7012cc4959dfc/voxygen/anim/src/character/run.rs)、[`idle.rs`](https://github.com/veloren/veloren/blob/cd75076cf157d47c97bdf21c5bd7012cc4959dfc/voxygen/anim/src/character/idle.rs)、[`jump.rs`](https://github.com/veloren/veloren/blob/cd75076cf157d47c97bdf21c5bd7012cc4959dfc/voxygen/anim/src/character/jump.rs)、[`roll.rs`](https://github.com/veloren/veloren/blob/cd75076cf157d47c97bdf21c5bd7012cc4959dfc/voxygen/anim/src/character/roll.rs)。
 
 **状态：** 代码已提交，CI 和视觉验收必须分别记录，不能由单元测试代替浏览器截图。
+
+## 浏览器截图复核：镜头近距修复
+
+首次 Chromium 截图发现，贴近障碍物时第三人称相机的碰撞射线会把视距压到约 0.2m，导致原版人物背部占满视野。修复为：距离缩短立即响应遮挡，远离障碍后逐渐回到设定距离；当实际镜头距小于 1.75m 时暂时隐藏第三人称人物。此外忽略鼠标锁定后的第一次异常位移增量，以减少初次点击后的视角跳变。F3 展示实际镜头距离与自动隐藏状态。需以更新后的自动截图复核。
