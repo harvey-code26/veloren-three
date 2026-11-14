@@ -8,6 +8,7 @@ on:
 jobs:
   test-and-build:
     runs-on: ubuntu-latest
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -19,7 +20,7 @@ jobs:
       - name: Install Chromium for model smoke test
         run: npx playwright install --with-deps chromium
       - name: Render original character in headless Chromium
-        run: npm run smoke:browser
+        run: timeout 110s npm run smoke:browser
       - uses: actions/upload-artifact@v4
         if: always()
         with:
